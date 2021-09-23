@@ -142,10 +142,11 @@ df_BS_Electric_Cars['CAT'] = CAT
 
 print(df_BS_Electric_Cars)
 
+"""
 # add data to "EN_INDICATORS_VALUES.csv"
 export_file_name = os.path.join(credentials.local_path, credentials.local_file_name)
 df_BS_Electric_Cars.to_csv(export_file_name, mode='a', header=False, index=False)
-
+"""
 """
 996, Total new registrations of electric and hybrid motor cars [%] ,
 Share of passenger cars (PW) with either electric or hybrid drive in all passenger cars put into circulation for the first time between October 1 of the previous year and September 30;
@@ -191,10 +192,11 @@ df_BS_New_Electric_Cars['CAT'] = CAT
 
 print(df_BS_New_Electric_Cars)
 
+"""
 # add data to "EN_INDICATORS_VALUES.csv"
 export_file_name = os.path.join(credentials.local_path, credentials.local_file_name)
 df_BS_New_Electric_Cars.to_csv(export_file_name, mode='a', header=False, index=False)
-
+"""
 """"
 999,Charging stations of electronic cars [no.] ,Data taken from the Swiss Federal Office for Energy and converted to communes,,,,,,
 998,Charging stations of electronic cars per 1000 inhabitants [no.] ,Data taken from the Swiss Federal Office for Energy and converted to communes,,,,,,
@@ -222,6 +224,42 @@ df_BS_charging['CAT'] = CAT
 
 print(df_BS_charging['VALUE'])
 
+"""
 # add data to "EN_INDICATORS_VALUES.csv"
 export_file_name = os.path.join(credentials.local_path, credentials.local_file_name)
 df_BS_charging.to_csv(export_file_name, mode='a', header=False, index=False)
+"""
+
+"""
+add 999 and 998 on the Gemeinde level, take population from https://data.bs.ch/explore/dataset/100060/table/?sort=-jahr for 2019
+"""
+
+# get our data
+value_Basel = 63
+value_Bettingen = 2
+value_Riehen = 2
+pop_Basel_per1000 = 172217/1000
+pop_Bettingen_per1000 = 1180/1000
+pop_Riehen_per1000 = 21443/1000
+values = [value_Basel, value_Basel/pop_Basel_per1000, value_Bettingen, value_Bettingen/pop_Bettingen_per1000, value_Riehen, value_Riehen/pop_Riehen_per1000]
+
+
+# make dataframe with our data
+df_Gemeinde_charging = pd.DataFrame(columns=["INDICATOR_ID", "SPATIALUNIT_ID", "YEAR", "VALUE", "VALUE_ADDITION", "CAT"])
+INDICATOR_ID = [999, 998, 999, 998, 999, 998]
+SPATIALUNIT_ID = [1101, 1101, 1102, 1102, 1103, 1103]
+VALUE_ADDITION = np.nan
+CAT = str(datetime.datetime.today().strftime('%d.%m.%y %H:%M'))
+YEAR = 2021
+
+df_Gemeinde_charging['VALUE'] = values
+df_Gemeinde_charging['YEAR'] = YEAR
+df_Gemeinde_charging['INDICATOR_ID'] = INDICATOR_ID
+df_Gemeinde_charging['SPATIALUNIT_ID'] = SPATIALUNIT_ID
+df_Gemeinde_charging['VALUE_ADDITION'] = VALUE_ADDITION
+df_Gemeinde_charging['CAT'] = CAT
+
+
+# add data to "EN_INDICATORS_VALUES.csv"
+export_file_name = os.path.join(credentials.local_path, credentials.local_file_name)
+df_Gemeinde_charging.to_csv(export_file_name, mode='a', header=False, index=False)
